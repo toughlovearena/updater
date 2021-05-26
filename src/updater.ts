@@ -4,7 +4,7 @@ import simpleGit, { SimpleGit } from 'simple-git';
 export class Updater {
   static readonly defaultTimeout = 30 * 1000; // 30 seconds
 
-  private readonly timeout: number;
+  readonly timeout: number;
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
@@ -12,25 +12,28 @@ export class Updater {
     this.timeout = options?.timeout ?? Updater.defaultTimeout;
   }
 
-  protected async run() {
-    if (this.rebuilding) {
-      return;
-    }
-
+  protected async pull(): Promise<boolean> {
     const sg: SimpleGit = simpleGit();
     const pullResult = await sg.pull();
+    return pullResult.summary.changes > 0;
+  }
+  protected async update(): Promise<void> {
+    await childProcess.spawn('npm run updater-rebuild', {
+      detached: true,
+    });
+  }
 
-    if (this.rebuilding) {
-      return;
-    }
+  async run() {
+    if (this.rebuilding) { return; }
 
-    const changes = pullResult.summary.changes > 0;
+    const changes = await this.pull();
+
+    if (this.rebuilding) { return; }
+
     if (changes) {
       this.clear();
       this.rebuilding = true;
-      await childProcess.spawn('npm run updater-rebuild', {
-        detached: true,
-      });
+      await this.update();
     }
   }
 
@@ -38,8 +41,11 @@ export class Updater {
     if (this.interval !== undefined) {
       clearInterval(this.interval);
     }
+    this.interval = undefined;
   }
-
+  isRunning() {
+    return this.interval !== undefined;
+  }
   cron() {
     this.clear();
     this.interval = setInterval(() => this.run(), this.timeout);
