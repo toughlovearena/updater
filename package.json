@@ -1,0 +1,16 @@
+{
+  "name": "@toughlovearena/updater",
+  "version": "1.0.0",
+  "description": "CLI tool for automatically pulling and updating dedicated servers",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toughlovearena/updater.git"
+  },
+  "author": "mpaulweeks@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toughlovearena/updater/issues"
+  },
+  "homepage": "https://github.com/toughlovearena/updater"
+}
