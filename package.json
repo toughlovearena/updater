@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "jest --config jestconfig.json --detectOpenHandles",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
@@ -14,6 +14,9 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
+  },
+  "bin": {
+    "updater": "lib/index.js"
   },
   "repository": {
     "type": "git",
@@ -26,8 +29,12 @@
     "url": "https://github.com/toughlovearena/updater/issues"
   },
   "homepage": "https://github.com/toughlovearena/updater",
+  "dependencies": {
+    "simple-git": "^2.39.0"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.1",
     "jest": "^27.0.1",
     "prettier": "^2.3.0",
     "ts-jest": "^27.0.0",
