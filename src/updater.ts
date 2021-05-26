@@ -8,19 +8,23 @@ export class Updater {
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
-  constructor(options?: { timeout?: number, }) {
+  constructor(options?: { timeout?: number }) {
     this.timeout = options?.timeout ?? Updater.defaultTimeout;
   }
 
   protected async run() {
-    if (this.rebuilding) { return; }
+    if (this.rebuilding) {
+      return;
+    }
 
     const sg: SimpleGit = simpleGit();
     const pullResult = await sg.pull();
 
-    if (this.rebuilding) { return; }
+    if (this.rebuilding) {
+      return;
+    }
 
-    const changes = (pullResult.summary.changes > 0);
+    const changes = pullResult.summary.changes > 0;
     if (changes) {
       this.clear();
       this.rebuilding = true;
