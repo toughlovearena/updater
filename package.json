@@ -1,6 +1,6 @@
 {
   "name": "@toughlovearena/updater",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "CLI tool for automatically pulling and updating dedicated servers",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
