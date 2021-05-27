@@ -35,4 +35,4 @@ export const kill = async () => {
   } catch (err) {
     // swallow error, continue
   }
-}
+};
