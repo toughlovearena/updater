@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+// ! is required for bin export aka `npx @toughlovearena/updater`
+
 export * from './updater';
 
 import { rebuild } from './rebuild';
