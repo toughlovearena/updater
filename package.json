@@ -16,10 +16,7 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "bin": {
-    "@toughlovearena/updater": "lib/runUpdate.js",
-    "@toughlovearena/updater-kill": "lib/runKill.js"
-  },
+  "bin": "lib/run.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toughlovearena/updater.git"
