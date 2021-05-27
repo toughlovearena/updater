@@ -6,7 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json --detectOpenHandles",
-    "deploy": "npm version patch && npm publish",
+    "push": "npm i && npm run build && npm run format && npm run lint && npm version patch",
+    "deploy": "npm run push && npm publish",
     "build": "rm -rf lib/ && tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
