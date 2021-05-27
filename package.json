@@ -16,8 +16,8 @@
     "postversion": "git push && git push --tags"
   },
   "bin": {
-    "@toughlovearena/updater": "lib/update.js",
-    "@toughlovearena/updater-kill": "lib/kill.js"
+    "@toughlovearena/updater": "lib/runUpdate.js",
+    "@toughlovearena/updater-kill": "lib/runKill.js"
   },
   "repository": {
     "type": "git",
