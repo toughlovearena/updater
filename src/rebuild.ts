@@ -21,7 +21,7 @@ export const rebuild = async () => {
     childProcess.spawn(process.argv.slice(0, 1)[0], process.argv.slice(1), {
       cwd: process.cwd(),
       detached: true,
-      stdio: "inherit"
+      stdio: 'inherit',
     });
   });
 
