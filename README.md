@@ -18,3 +18,7 @@ import { Updater } from '@toughlovearena/updater';
 // somewhere in app start
 new Updater().cron();
 ```
+
+## notes
+
+test 0
