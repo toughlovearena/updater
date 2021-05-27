@@ -23,7 +23,7 @@ export const rebuild = async () => {
   try {
     scriptLog(`Updater: forever stop ${scriptPath}`);
     const stopEvent = forever.stop(scriptPath);
-    await events.once(stopEvent, 'stop')
+    await events.once(stopEvent, 'stop');
   } catch (err) {
     // swallow error, continue
   }
