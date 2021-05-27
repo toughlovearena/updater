@@ -20,6 +20,14 @@ export const rebuild = async () => {
   await childProcess.exec('npm run build');
 
   // stop
+  await kill();
+
+  // start
+  scriptLog(`Updater: forever start ${scriptPath}`);
+  forever.startDaemon(scriptPath);
+};
+
+export const kill = async () => {
   try {
     scriptLog(`Updater: forever stop ${scriptPath}`);
     const stopEvent = forever.stop(scriptPath);
@@ -27,8 +35,4 @@ export const rebuild = async () => {
   } catch (err) {
     // swallow error, continue
   }
-
-  // start
-  scriptLog(`Updater: forever start ${scriptPath}`);
-  forever.startDaemon(scriptPath);
-};
+}
