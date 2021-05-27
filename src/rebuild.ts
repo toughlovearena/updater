@@ -27,7 +27,7 @@ export const rebuild = async () => {
 };
 
 export const kill = () => {
-  return new Promise<void>(resolve => {
+  return new Promise<void>((resolve) => {
     scriptLog(`Updater: forever stop ${scriptPath}`);
     try {
       const emitter = forever.stop(scriptPath);
