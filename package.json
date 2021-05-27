@@ -17,7 +17,6 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "bin": "lib/run.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toughlovearena/updater.git"
@@ -30,7 +29,6 @@
   },
   "homepage": "https://github.com/toughlovearena/updater",
   "dependencies": {
-    "forever": "^3.0.4",
     "simple-git": "^2.39.0"
   },
   "devDependencies": {

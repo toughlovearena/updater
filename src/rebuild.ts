@@ -1,41 +1,31 @@
 import * as childProcess from 'child_process';
-import * as forever from 'forever';
 import simpleGit, { SimpleGit } from 'simple-git';
+import * as util from 'util';
+import { log } from './util';
 
-// tslint:disable-next-line:no-console
-const scriptLog = console.log;
-
-const scriptPath = 'dist/index.js';
 export const rebuild = async () => {
   // git pull
-  scriptLog('Updater: git pull');
+  log('Updater: git pull');
   const sg: SimpleGit = simpleGit();
   await sg.pull();
 
   // install and build new version
-  scriptLog('Updater: npm install');
-  await childProcess.exec('npm install');
-  scriptLog('Updater: npm run build');
-  await childProcess.exec('npm run build');
+  log('Updater: npm install');
+  await util.promisify(childProcess.exec)('npm install');
+  log('Updater: npm run build');
+  await util.promisify(childProcess.exec)('npm run build');
+
+  // prep restart
+  process.on('exit', () => {
+    log(`Updater: restarting`);
+    childProcess.spawn(process.argv.slice(0, 1)[0], process.argv.slice(1), {
+      cwd: process.cwd(),
+      detached: true,
+      stdio: "inherit"
+    });
+  });
 
   // stop
-  await kill();
-
-  // start
-  scriptLog(`Updater: forever start ${scriptPath}`);
-  forever.startDaemon(scriptPath);
-};
-
-export const kill = () => {
-  return new Promise<void>((resolve) => {
-    scriptLog(`Updater: forever stop ${scriptPath}`);
-    try {
-      const emitter = forever.stop(scriptPath);
-      emitter.on('error', resolve);
-      emitter.on('stop', resolve);
-    } catch (err) {
-      // swallow error, continue
-      resolve();
-    }
-  });
+  log(`Updater: stopping`);
+  process.exit();
 };
