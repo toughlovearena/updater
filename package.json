@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --config jestconfig.json --detectOpenHandles",
     "deploy": "npm version patch && npm publish",
-    "build": "tsc",
+    "build": "rm -rf lib/ && tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
