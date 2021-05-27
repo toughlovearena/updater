@@ -16,7 +16,7 @@ class FakeUpdater extends Updater {
 
   // override
   constructor() {
-    super({ timeout: 5, });
+    super({ timeout: 5 });
   }
   protected async pull() {
     return await new Promise<boolean>((resolve, reject) => {
@@ -43,8 +43,8 @@ describe('Updater', () => {
   });
   afterEach(() => {
     // cleanup pending handles
-    sut._pulls.forEach(cb => cb.resolve(false));
-    sut._updates.forEach(cb => cb.resolve());
+    sut._pulls.forEach((cb) => cb.resolve(false));
+    sut._updates.forEach((cb) => cb.resolve());
     sut.clear();
   });
 

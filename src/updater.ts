@@ -24,11 +24,15 @@ export class Updater {
   }
 
   async run() {
-    if (this.rebuilding) { return; }
+    if (this.rebuilding) {
+      return;
+    }
 
     const changes = await this.pull();
 
-    if (this.rebuilding) { return; }
+    if (this.rebuilding) {
+      return;
+    }
 
     if (changes) {
       this.clear();
