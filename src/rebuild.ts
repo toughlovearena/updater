@@ -1,5 +1,4 @@
 import * as childProcess from 'child_process';
-import * as events from 'events';
 import * as forever from 'forever';
 import simpleGit, { SimpleGit } from 'simple-git';
 
@@ -27,12 +26,16 @@ export const rebuild = async () => {
   forever.startDaemon(scriptPath);
 };
 
-export const kill = async () => {
-  try {
+export const kill = () => {
+  return new Promise<void>(resolve => {
     scriptLog(`Updater: forever stop ${scriptPath}`);
-    const stopEvent = forever.stop(scriptPath);
-    await events.once(stopEvent, 'stop');
-  } catch (err) {
-    // swallow error, continue
-  }
+    try {
+      const emitter = forever.stop(scriptPath);
+      emitter.on('error', resolve);
+      emitter.on('stop', resolve);
+    } catch (err) {
+      // swallow error, continue
+      resolve();
+    }
+  });
 };
