@@ -1,7 +1,7 @@
 import { Updater } from '../updater';
 import { sleep } from '../util';
 
-interface PullCallback {
+interface StatusCallback {
   resolve(changes: boolean): void;
   reject(): void;
 }
@@ -11,16 +11,16 @@ interface UpdateCallback {
 }
 
 class FakeUpdater extends Updater {
-  _pulls: PullCallback[] = [];
-  _updates: UpdateCallback[] = [];
+  pendingStatus: StatusCallback[] = [];
+  pendingUpdate: UpdateCallback[] = [];
 
   // override
   constructor() {
     super({ timeout: 5 });
   }
-  protected async pull() {
+  protected async status() {
     return await new Promise<boolean>((resolve, reject) => {
-      this._pulls.push({
+      this.pendingStatus.push({
         resolve,
         reject,
       });
@@ -28,7 +28,7 @@ class FakeUpdater extends Updater {
   }
   protected async update() {
     return await new Promise<void>((resolve, reject) => {
-      this._updates.push({
+      this.pendingUpdate.push({
         resolve,
         reject,
       });
@@ -43,8 +43,8 @@ describe('Updater', () => {
   });
   afterEach(() => {
     // cleanup pending handles
-    sut._pulls.forEach((cb) => cb.resolve(false));
-    sut._updates.forEach((cb) => cb.resolve());
+    sut.pendingStatus.forEach((cb) => cb.resolve(false));
+    sut.pendingUpdate.forEach((cb) => cb.resolve());
     sut.clear();
   });
 
@@ -61,13 +61,13 @@ describe('Updater', () => {
     expect(sut.cron()).toBe(undefined);
     expect(sut.isRunning()).toBe(true);
 
-    expect(sut._pulls.length).toBe(0);
+    expect(sut.pendingStatus.length).toBe(0);
     await sleep(sut.timeout);
-    expect(sut._pulls.length).toBeGreaterThan(0);
-    sut._pulls[0].resolve(true);
+    expect(sut.pendingStatus.length).toBeGreaterThan(0);
+    sut.pendingStatus[0].resolve(true);
     await sleep(sut.timeout);
 
-    expect(sut._updates.length).toBeGreaterThanOrEqual(1);
+    expect(sut.pendingUpdate.length).toBeGreaterThanOrEqual(1);
     expect(sut.isRunning()).toBe(false);
   });
 });

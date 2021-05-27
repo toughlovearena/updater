@@ -1,6 +1,10 @@
 import * as childProcess from 'child_process';
 import simpleGit, { SimpleGit } from 'simple-git';
 
+export interface UpdaterOptions {
+  timeout?: number;
+}
+
 export class Updater {
   static readonly defaultTimeout = 30 * 1000; // 30 seconds
 
@@ -8,17 +12,18 @@ export class Updater {
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
-  constructor(options?: { timeout?: number }) {
+  constructor(options?: UpdaterOptions) {
     this.timeout = options?.timeout ?? Updater.defaultTimeout;
   }
 
-  protected async pull(): Promise<boolean> {
+  protected async status(): Promise<boolean> {
     const sg: SimpleGit = simpleGit();
-    const pullResult = await sg.pull();
-    return pullResult.summary.changes > 0;
+    await sg.fetch();
+    const status = await sg.status();
+    return status.behind > 0;
   }
   protected async update(): Promise<void> {
-    await childProcess.spawn('npm run updater-rebuild', {
+    await childProcess.spawn('npm run updater', {
       detached: true,
     });
   }
@@ -28,7 +33,7 @@ export class Updater {
       return;
     }
 
-    const changes = await this.pull();
+    const changes = await this.status();
 
     if (this.rebuilding) {
       return;
