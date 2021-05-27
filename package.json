@@ -7,15 +7,13 @@
   "scripts": {
     "test": "jest --config jestconfig.json --detectOpenHandles",
     "clean": "npm i && npm run build && npm run format && npm run lint",
-    "predeploy": "npm run clean && npm version patch",
-    "deploy": "npm publish",
     "build": "rm -rf lib/ && tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
+    "preversion": "npm run clean",
+    "version": "git add -A src",
     "postversion": "git push && git push --tags"
   },
   "repository": {
