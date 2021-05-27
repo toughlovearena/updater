@@ -30,10 +30,10 @@ export class Updater {
         const emitter = childProcess.spawn('npx @toughlovearena/updater', {
           detached: true,
         });
-        emitter.on("close", resolve);
-        emitter.on("disconnect", resolve);
-        emitter.on("error", resolve);
-        emitter.on("exit", resolve);
+        emitter.on('close', resolve);
+        emitter.on('disconnect', resolve);
+        emitter.on('error', resolve);
+        emitter.on('exit', resolve);
       } catch (err) {
         // swallow error, continue
         resolve();
