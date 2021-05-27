@@ -23,7 +23,7 @@ export class Updater {
     return status.behind > 0;
   }
   protected async update(): Promise<void> {
-    await childProcess.spawn('npm run updater', {
+    await childProcess.spawn('npm run @toughlovearena/updater', {
       detached: true,
     });
   }

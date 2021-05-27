@@ -15,9 +15,7 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "bin": {
-    "updater": "lib/index.js"
-  },
+  "bin": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toughlovearena/updater.git"
