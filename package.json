@@ -4,6 +4,7 @@
   "description": "CLI tool for automatically pulling and updating dedicated servers",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "bin": "lib/run.ts",
   "scripts": {
     "test": "jest --config jestconfig.json --detectOpenHandles",
     "clean": "npm i && npm run build && npm run lint && npm run format",
