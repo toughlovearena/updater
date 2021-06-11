@@ -13,7 +13,7 @@ async function sleep(ms: number) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, ms);
   });
-};
+}
 
 class FakeUpdater extends Updater {
   pendingStatus: StatusCallback[] = [];
