@@ -1,7 +1,7 @@
 import * as childProcess from 'child_process';
 import simpleGit, { SimpleGit } from 'simple-git';
 import * as util from 'util';
-import { log } from './util';
+import { log } from './log';
 
 export const rebuild = async () => {
   // git pull
