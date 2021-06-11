@@ -15,17 +15,7 @@ export const rebuild = async () => {
   log('Updater: npm run build');
   await util.promisify(childProcess.exec)('npm run build');
 
-  // prep restart
-  process.on('exit', () => {
-    log(`Updater: restarting`);
-    childProcess.spawn(process.argv.slice(0, 1)[0], process.argv.slice(1), {
-      cwd: process.cwd(),
-      detached: true,
-      stdio: 'inherit',
-    });
-  });
-
-  // stop
+  // stop, forcing forever to reboot
   log(`Updater: stopping`);
   process.exit();
 };
