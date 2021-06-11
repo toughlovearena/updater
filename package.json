@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/toughlovearena/updater",
   "dependencies": {
+    "forever": "^4.0.0",
     "simple-git": "^2.39.0"
   },
   "devDependencies": {
