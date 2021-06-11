@@ -1,5 +1,4 @@
 import { Updater } from '../updater';
-import { sleep } from '../util';
 
 interface StatusCallback {
   resolve(changes: boolean): void;
@@ -9,6 +8,12 @@ interface UpdateCallback {
   resolve(): void;
   reject(): void;
 }
+
+async function sleep(ms: number) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
+};
 
 class FakeUpdater extends Updater {
   pendingStatus: StatusCallback[] = [];
