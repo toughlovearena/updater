@@ -3,13 +3,19 @@
 
 import * as childProcess from 'child_process';
 import * as util from 'util';
+import { log } from './log';
 
 const startForever = async () => {
+  log('Updater: npm install');
+  await util.promisify(childProcess.exec)('npm install');
+  log('Updater: npm run build');
+  await util.promisify(childProcess.exec)('npm run build');
+
+  log('Updater: starting forever');
   await util.promisify(childProcess.exec)('npx forever start dist/index.js');
 };
 
 if (require.main === module) {
-  // tslint:disable-next-line:no-console
-  console.log('Running @toughlovearena/updater');
+  log('Running @toughlovearena/updater');
   startForever();
 }

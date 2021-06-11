@@ -19,6 +19,6 @@ import { Updater } from '@toughlovearena/updater';
 new Updater().cron();
 ```
 
-## notes
-
-test 0
+```bash
+npx @toughlovearena/updater
+```
