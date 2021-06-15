@@ -16,7 +16,7 @@ export class Updater {
     this.timeout = options?.timeout ?? Updater.defaultTimeout;
   }
 
-  protected async status(): Promise<boolean> {
+  protected async hasChanged(): Promise<boolean> {
     const sg: SimpleGit = simpleGit();
     await sg.fetch();
     const status = await sg.status();
@@ -31,7 +31,13 @@ export class Updater {
       return;
     }
 
-    const changes = await this.status();
+    let changes = false;
+    try {
+      changes = await this.hasChanged();
+    } catch (err) {
+      // git/network unavailable, swallow error
+      changes = false;
+    }
 
     if (this.rebuilding) {
       return;

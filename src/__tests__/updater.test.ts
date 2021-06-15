@@ -2,11 +2,11 @@ import { Updater } from '../updater';
 
 interface StatusCallback {
   resolve(changes: boolean): void;
-  reject(): void;
+  reject(reason?: any): void;
 }
 interface UpdateCallback {
   resolve(): void;
-  reject(): void;
+  reject(reason?: any): void;
 }
 
 async function sleep(ms: number) {
@@ -23,7 +23,7 @@ class FakeUpdater extends Updater {
   constructor() {
     super({ timeout: 5 });
   }
-  protected async status() {
+  protected async hasChanged() {
     return await new Promise<boolean>((resolve, reject) => {
       this.pendingStatus.push({
         resolve,
@@ -74,5 +74,20 @@ describe('Updater', () => {
 
     expect(sut.pendingUpdate.length).toBeGreaterThanOrEqual(1);
     expect(sut.isRunning()).toBe(false);
+  });
+
+  test('cron() handles network errors as non-changes', async () => {
+    expect(sut.isRunning()).toBe(false);
+    sut.cron();
+    expect(sut.isRunning()).toBe(true);
+
+    expect(sut.pendingStatus.length).toBe(0);
+    await sleep(sut.timeout);
+    expect(sut.pendingStatus.length).toBeGreaterThan(0);
+    sut.pendingStatus[0].reject('this should be caught');
+    await sleep(sut.timeout);
+
+    expect(sut.pendingUpdate.length).toBe(0);
+    expect(sut.isRunning()).toBe(true);
   });
 });
