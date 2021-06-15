@@ -1,5 +1,7 @@
 # @toughlovearena/updater
 
+![npm (scoped)](https://img.shields.io/npm/v/@toughlovearena/updater)
+
 CLI tool for automatically pulling and updating dedicated servers for Tough Love Arena
 
 ## assumptions
