@@ -21,7 +21,7 @@ class FakeUpdater extends Updater {
 
   // override
   constructor() {
-    super({ timeout: 5 });
+    super({ cronTimeout: 5 });
   }
   protected async hasChanged() {
     return await new Promise<boolean>((resolve, reject) => {
@@ -67,10 +67,10 @@ describe('Updater', () => {
     expect(sut.isRunning()).toBe(true);
 
     expect(sut.pendingStatus.length).toBe(0);
-    await sleep(sut.timeout);
+    await sleep(sut.cronTimeout);
     expect(sut.pendingStatus.length).toBeGreaterThan(0);
     sut.pendingStatus[0].resolve(true);
-    await sleep(sut.timeout);
+    await sleep(sut.cronTimeout);
 
     expect(sut.pendingUpdate.length).toBeGreaterThanOrEqual(1);
     expect(sut.isRunning()).toBe(false);
@@ -82,10 +82,10 @@ describe('Updater', () => {
     expect(sut.isRunning()).toBe(true);
 
     expect(sut.pendingStatus.length).toBe(0);
-    await sleep(sut.timeout);
+    await sleep(sut.cronTimeout);
     expect(sut.pendingStatus.length).toBeGreaterThan(0);
     sut.pendingStatus[0].reject('this should be caught');
-    await sleep(sut.timeout);
+    await sleep(sut.cronTimeout);
 
     expect(sut.pendingUpdate.length).toBe(0);
     expect(sut.isRunning()).toBe(true);

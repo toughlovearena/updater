@@ -2,18 +2,23 @@ import simpleGit, { SimpleGit } from 'simple-git';
 import { rebuild } from './rebuild';
 
 export interface UpdaterOptions {
-  timeout?: number;
+  cronTimeout?: number;
+  processTimeout?: number;
 }
 
 export class Updater {
-  static readonly defaultTimeout = 30 * 1000; // 30 seconds
+  static readonly defaultCronTimeout = 30 * 1000; // 30 seconds
+  static readonly defaultProcessTimeout = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-  readonly timeout: number;
+  readonly startedAt: number = new Date().getTime();
+  readonly cronTimeout: number;
+  readonly processTimeout: number;
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
   constructor(options?: UpdaterOptions) {
-    this.timeout = options?.timeout ?? Updater.defaultTimeout;
+    this.cronTimeout = options?.cronTimeout ?? Updater.defaultCronTimeout;
+    this.processTimeout = options?.processTimeout ?? Updater.defaultProcessTimeout;
   }
 
   protected async hasChanged(): Promise<boolean> {
@@ -43,7 +48,8 @@ export class Updater {
       return;
     }
 
-    if (changes) {
+    const processTooOld = this.age() > this.processTimeout;
+    if (changes || processTooOld) {
       this.clear();
       this.rebuilding = true;
       await this.update();
@@ -61,6 +67,13 @@ export class Updater {
   }
   cron() {
     this.clear();
-    this.interval = setInterval(() => this.run(), this.timeout);
+    this.interval = setInterval(() => this.run(), this.cronTimeout);
+  }
+  age() {
+    return new Date().getTime() - this.startedAt;
+  }
+  async gitHash(): Promise<string> {
+    const log = await simpleGit().log();
+    return log.latest?.hash ?? '???';
   }
 }
