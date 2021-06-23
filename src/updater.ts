@@ -1,7 +1,9 @@
 import simpleGit, { SimpleGit } from 'simple-git';
 import { rebuild } from './rebuild';
+import { RealClock, TimeKeeper } from './time';
 
-export interface UpdaterOptions {
+export interface UpdaterArgs {
+  timeKeeper?: TimeKeeper;
   cronTimeout?: number;
   processTimeout?: number;
 }
@@ -10,13 +12,16 @@ export class Updater {
   static readonly defaultCronTimeout = 30 * 1000; // 30 seconds
   static readonly defaultProcessTimeout = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-  readonly startedAt: number = new Date().getTime();
+  readonly timeKeeper: TimeKeeper;
+  readonly startedAt: number;
   readonly cronTimeout: number;
   readonly processTimeout: number;
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
-  constructor(options?: UpdaterOptions) {
+  constructor(options?: UpdaterArgs) {
+    this.timeKeeper = options?.timeKeeper ?? RealClock;
+    this.startedAt = this.timeKeeper.now();
     this.cronTimeout = options?.cronTimeout ?? Updater.defaultCronTimeout;
     this.processTimeout = options?.processTimeout ?? Updater.defaultProcessTimeout;
   }
