@@ -1,21 +1,28 @@
 import * as childProcess from 'child_process';
-import simpleGit, { SimpleGit } from 'simple-git';
 import * as util from 'util';
+import { CanGit } from './gitter';
 import { log } from './log';
 
-export const rebuild = async () => {
-  // git pull
-  log('Updater: git pull');
-  const sg: SimpleGit = simpleGit();
-  await sg.pull();
+export interface CanRebuild {
+  run(): void;
+}
 
-  // install and build new version
-  log('Updater: npm install');
-  await util.promisify(childProcess.exec)('npm install');
-  log('Updater: npm run build');
-  await util.promisify(childProcess.exec)('npm run build');
+export class Rebuilder implements CanRebuild {
+  constructor(private readonly gitter: CanGit) { }
 
-  // stop, forcing forever to reboot
-  log(`Updater: stopping`);
-  process.exit();
-};
+  async run() {
+    // git pull
+    log('Updater: git pull');
+    await this.gitter.pull();
+
+    // install and build new version
+    log('Updater: npm install');
+    await util.promisify(childProcess.exec)('npm install');
+    log('Updater: npm run build');
+    await util.promisify(childProcess.exec)('npm run build');
+
+    // stop, forcing forever to reboot
+    log(`Updater: stopping`);
+    process.exit();
+  }
+}

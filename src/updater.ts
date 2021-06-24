@@ -1,9 +1,11 @@
-import simpleGit, { SimpleGit } from 'simple-git';
-import { rebuild } from './rebuild';
+import { CanGit, Gitter } from './gitter';
+import { CanRebuild, Rebuilder } from './rebuild';
 import { RealClock, TimeKeeper } from './time';
 
 export interface UpdaterArgs {
   timeKeeper?: TimeKeeper;
+  gitter?: CanGit;
+  rebuilder?: CanRebuild;
   cronTimeout?: number;
   processTimeout?: number;
 }
@@ -13,6 +15,8 @@ export class Updater {
   static readonly defaultProcessTimeout = 7 * 24 * 60 * 60 * 1000; // 7 days
 
   readonly timeKeeper: TimeKeeper;
+  readonly gitter: CanGit;
+  readonly rebuilder: CanRebuild;
   readonly startedAt: number;
   readonly cronTimeout: number;
   readonly processTimeout: number;
@@ -21,20 +25,11 @@ export class Updater {
 
   constructor(options?: UpdaterArgs) {
     this.timeKeeper = options?.timeKeeper ?? RealClock;
+    this.gitter = options?.gitter ?? new Gitter();
+    this.rebuilder = options?.rebuilder ?? new Rebuilder(this.gitter);
     this.startedAt = this.timeKeeper.now();
     this.cronTimeout = options?.cronTimeout ?? Updater.defaultCronTimeout;
     this.processTimeout = options?.processTimeout ?? Updater.defaultProcessTimeout;
-  }
-
-  // subclasses and faked out during test
-  protected async hasChanged(): Promise<boolean> {
-    const sg: SimpleGit = simpleGit();
-    await sg.fetch();
-    const status = await sg.status();
-    return status.behind > 0;
-  }
-  protected async update(): Promise<void> {
-    await rebuild();
   }
 
   async run() {
@@ -46,7 +41,7 @@ export class Updater {
 
     if (!shouldRestart) {
       try {
-        shouldRestart = await this.hasChanged();
+        shouldRestart = await this.gitter.hasChanged();
       } catch (err) {
         // git/network unavailable, swallow error
         shouldRestart = false;
@@ -60,7 +55,7 @@ export class Updater {
     if (shouldRestart) {
       this.clear();
       this.rebuilding = true;
-      await this.update();
+      await this.rebuilder.run();
     }
   }
 
@@ -79,9 +74,5 @@ export class Updater {
   }
   age() {
     return this.timeKeeper.now() - this.startedAt;
-  }
-  async gitHash(): Promise<string> {
-    const log = await simpleGit().log();
-    return log.latest?.hash ?? '???';
   }
 }
