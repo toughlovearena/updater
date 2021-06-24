@@ -63,7 +63,7 @@ export class Updater {
 
   clear() {
     if (this.interval !== undefined) {
-      clearInterval(this.interval);
+      this.timeKeeper.clearCron(this.interval);
     }
     this.interval = undefined;
   }
@@ -72,7 +72,7 @@ export class Updater {
   }
   cron() {
     this.clear();
-    this.interval = setInterval(() => this.run(), this.cronTimeout);
+    this.interval = this.timeKeeper.setCron(() => this.run(), this.cronTimeout);
   }
   age() {
     return new Date().getTime() - this.startedAt;
