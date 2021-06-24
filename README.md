@@ -1,6 +1,7 @@
 # @toughlovearena/updater
 
 ![npm (scoped)](https://img.shields.io/npm/v/@toughlovearena/updater)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/toughlovearena/updater/Unit%20Tests?label=tests)
 
 CLI tool for automatically pulling and updating dedicated servers for Tough Love Arena
 
