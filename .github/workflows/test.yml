@@ -33,11 +33,5 @@ jobs:
     - name: Install
       run: npm install
 
-    - name: Lint
-      run: npm run lint
-
-    - name: Build
-      run: npm run tsc
-
     - name: Test
-      run: npm run ci-test
+      run: npm run test
