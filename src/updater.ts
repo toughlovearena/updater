@@ -75,7 +75,7 @@ export class Updater {
     this.interval = this.timeKeeper.setCron(() => this.run(), this.cronTimeout);
   }
   age() {
-    return new Date().getTime() - this.startedAt;
+    return this.timeKeeper.now() - this.startedAt;
   }
   async gitHash(): Promise<string> {
     const log = await simpleGit().log();

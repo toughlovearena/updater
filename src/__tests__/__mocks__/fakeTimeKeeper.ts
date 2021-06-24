@@ -11,6 +11,11 @@ export class FakeTimeKeeper implements TimeKeeper {
   private ticks = 0;
   private crons: CronInfo[] = [];
 
+  static sleep(ms: number) {
+    return new Promise<void>(resolve => {
+      setTimeout(resolve, ms);
+    });
+  }
   _set(state: number) {
     this.ticks = state;
     this.crons.forEach(ci => {

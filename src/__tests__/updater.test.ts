@@ -54,7 +54,7 @@ describe('Updater', () => {
     sut.clear();
   });
 
-  test('cron() can be started and cleared', () => {
+  test('cron() can be started and cleared', async () => {
     expect(sut.isRunning()).toBe(false);
     sut.cron();
     expect(sut.isRunning()).toBe(true);
@@ -62,31 +62,32 @@ describe('Updater', () => {
     expect(sut.isRunning()).toBe(false);
   });
 
-  test('cron() terminates on changes', () => {
+  test('cron() terminates on changes', async () => {
     expect(sut.isRunning()).toBe(false);
     expect(sut.cron()).toBe(undefined);
     expect(sut.isRunning()).toBe(true);
 
     expect(sut.pendingStatus.length).toBe(0);
     tk._increment(sut.cronTimeout);
-    expect(sut.pendingStatus.length).toBeGreaterThan(0);
+    expect(sut.pendingStatus.length).toBe(1);
     sut.pendingStatus[0].resolve(true);
-    tk._increment(sut.cronTimeout);
 
-    expect(sut.pendingUpdate.length).toBeGreaterThanOrEqual(1);
+    // give up thread so other promises can resolve
+    await FakeTimeKeeper.sleep(100);
+
+    expect(sut.pendingUpdate.length).toBe(1);
     expect(sut.isRunning()).toBe(false);
   });
 
-  test('cron() handles network errors as non-changes', () => {
+  test('cron() handles network errors as non-changes', async () => {
     expect(sut.isRunning()).toBe(false);
     sut.cron();
     expect(sut.isRunning()).toBe(true);
 
     expect(sut.pendingStatus.length).toBe(0);
     tk._increment(sut.cronTimeout);
-    expect(sut.pendingStatus.length).toBeGreaterThan(0);
+    expect(sut.pendingStatus.length).toBe(1);
     sut.pendingStatus[0].reject('this should be caught');
-    tk._increment(sut.cronTimeout);
 
     expect(sut.pendingUpdate.length).toBe(0);
     expect(sut.isRunning()).toBe(true);
