@@ -1,4 +1,3 @@
-import { TimeKeeper } from '../time';
 import { Updater } from '../updater';
 import { FakeTimeKeeper } from './__mocks__/fakeTimeKeeper';
 
@@ -16,12 +15,6 @@ class FakeUpdater extends Updater {
   pendingUpdate: UpdateCallback[] = [];
 
   // override
-  constructor(tk: TimeKeeper) {
-    super({
-      timeKeeper: tk,
-      cronTimeout: 5,
-    });
-  }
   protected async hasChanged() {
     return await new Promise<boolean>((resolve, reject) => {
       this.pendingStatus.push({
@@ -45,7 +38,7 @@ describe('Updater', () => {
   let sut: FakeUpdater;
   beforeEach(() => {
     tk = new FakeTimeKeeper();
-    sut = new FakeUpdater(tk);
+    sut = new FakeUpdater({ timeKeeper: tk, });
   });
   afterEach(() => {
     // cleanup pending handles
@@ -62,7 +55,7 @@ describe('Updater', () => {
     expect(sut.isRunning()).toBe(false);
   });
 
-  test('cron() terminates on changes', async () => {
+  test('cron() restarts on changes', async () => {
     expect(sut.isRunning()).toBe(false);
     expect(sut.cron()).toBe(undefined);
     expect(sut.isRunning()).toBe(true);
@@ -70,11 +63,39 @@ describe('Updater', () => {
     expect(sut.pendingStatus.length).toBe(0);
     tk._increment(sut.cronTimeout);
     expect(sut.pendingStatus.length).toBe(1);
-    sut.pendingStatus[0].resolve(true);
 
     // give up thread so other promises can resolve
+    sut.pendingStatus[0].resolve(true);
     await FakeTimeKeeper.sleep(100);
 
+    expect(sut.pendingUpdate.length).toBe(1);
+    expect(sut.isRunning()).toBe(false);
+  });
+
+  test('cron() restarts on process timeout', async () => {
+    sut = new FakeUpdater({
+      timeKeeper: tk,
+      cronTimeout: 10,
+      processTimeout: 20,
+    });
+    expect(sut.isRunning()).toBe(false);
+    expect(sut.cron()).toBe(undefined);
+    expect(sut.isRunning()).toBe(true);
+
+    tk._set(10);
+    expect(sut.pendingStatus.length).toBe(1);
+    expect(sut.pendingUpdate.length).toBe(0);
+    expect(sut.isRunning()).toBe(true);
+
+    // give up thread so other promises can resolve
+    sut.pendingStatus[0].resolve(false);
+    await FakeTimeKeeper.sleep(100);
+    expect(sut.pendingStatus.length).toBe(1);
+    expect(sut.pendingUpdate.length).toBe(0);
+    expect(sut.isRunning()).toBe(true);
+
+    tk._set(20);
+    expect(sut.pendingStatus.length).toBe(1);
     expect(sut.pendingUpdate.length).toBe(1);
     expect(sut.isRunning()).toBe(false);
   });

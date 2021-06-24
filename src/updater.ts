@@ -41,20 +41,22 @@ export class Updater {
       return;
     }
 
-    let changes = false;
-    try {
-      changes = await this.hasChanged();
-    } catch (err) {
-      // git/network unavailable, swallow error
-      changes = false;
+    let shouldRestart = this.age() >= this.processTimeout;
+
+    if (!shouldRestart) {
+      try {
+        shouldRestart = await this.hasChanged();
+      } catch (err) {
+        // git/network unavailable, swallow error
+        shouldRestart = false;
+      }
+
+      if (this.rebuilding) {
+        return;
+      }
     }
 
-    if (this.rebuilding) {
-      return;
-    }
-
-    const processTooOld = this.age() > this.processTimeout;
-    if (changes || processTooOld) {
+    if (shouldRestart) {
       this.clear();
       this.rebuilding = true;
       await this.update();
