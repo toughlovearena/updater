@@ -1,24 +1,24 @@
-import { TimeKeeper } from "../../time";
+import { TimeKeeper } from '../../time';
 
 type CronInfo = {
   id: NodeJS.Timeout;
   lastRun: number;
   period: number;
   cb(): void;
-}
+};
 
 export class FakeTimeKeeper implements TimeKeeper {
   private ticks = 0;
   private crons: CronInfo[] = [];
 
   static sleep(ms: number) {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       setTimeout(resolve, ms);
     });
   }
   _set(state: number) {
     this.ticks = state;
-    this.crons.forEach(ci => {
+    this.crons.forEach((ci) => {
       let nextRun = ci.lastRun + ci.period;
       while (nextRun <= this.ticks) {
         ci.cb();
@@ -31,10 +31,12 @@ export class FakeTimeKeeper implements TimeKeeper {
     this._set(this.ticks + (num || 1));
   }
 
-  now() { return this.ticks; }
+  now() {
+    return this.ticks;
+  }
   setCron(cb: () => void, ms: number) {
     // just to get a real NodeJS.Timeout
-    const id = setTimeout(() => { }, 0);
+    const id = setTimeout(() => {}, 0);
     this.crons.push({
       id,
       lastRun: this.now(),
@@ -44,6 +46,6 @@ export class FakeTimeKeeper implements TimeKeeper {
     return id;
   }
   clearCron(id: NodeJS.Timeout) {
-    this.crons = this.crons.filter(ci => ci.id !== id);
+    this.crons = this.crons.filter((ci) => ci.id !== id);
   }
 }

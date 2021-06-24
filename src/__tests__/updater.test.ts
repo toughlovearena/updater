@@ -62,7 +62,7 @@ describe('Updater', () => {
     expect(gitter.pendingStatus.length).toBe(2);
 
     // resolve all
-    gitter.pendingStatus.forEach(p => p.resolve(true));
+    gitter.pendingStatus.forEach((p) => p.resolve(true));
     await FakeTimeKeeper.sleep(100);
 
     // try to run a bunch more times to simulate poorly cleaned up cron

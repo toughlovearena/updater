@@ -1,4 +1,4 @@
-import { CanGit } from "../../gitter";
+import { CanGit } from '../../gitter';
 
 interface StatusCallback {
   resolve(changes: boolean): void;

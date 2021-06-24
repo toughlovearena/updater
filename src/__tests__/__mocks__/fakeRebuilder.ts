@@ -1,4 +1,4 @@
-import { CanRebuild } from "../../rebuild";
+import { CanRebuild } from '../../rebuild';
 
 interface UpdateCallback {
   resolve(): void;

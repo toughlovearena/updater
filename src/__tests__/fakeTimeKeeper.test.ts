@@ -1,4 +1,4 @@
-import { FakeTimeKeeper } from "./__mocks__/fakeTimeKeeper";
+import { FakeTimeKeeper } from './__mocks__/fakeTimeKeeper';
 
 describe('FakeTimeKeeper', () => {
   test('basic functionality', () => {

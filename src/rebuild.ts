@@ -8,7 +8,7 @@ export interface CanRebuild {
 }
 
 export class Rebuilder implements CanRebuild {
-  constructor(private readonly gitter: CanGit) { }
+  constructor(private readonly gitter: CanGit) {}
 
   async run() {
     // git pull
