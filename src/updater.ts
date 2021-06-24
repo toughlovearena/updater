@@ -26,6 +26,7 @@ export class Updater {
     this.processTimeout = options?.processTimeout ?? Updater.defaultProcessTimeout;
   }
 
+  // subclasses and faked out during test
   protected async hasChanged(): Promise<boolean> {
     const sg: SimpleGit = simpleGit();
     await sg.fetch();
