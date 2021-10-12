@@ -8,9 +8,13 @@ export class Calendar {
 
   isInShutdownWindow() {
     const now = this.timeKeeper.now();
-    const relativeToEpoch = now - this.tuesdayEpoch;
-    const timeSinceWeeklyEpoch = relativeToEpoch - this.oneWeek;
-    const isInWindow = timeSinceWeeklyEpoch < (this.oneHour * 2);
+    let relativeToEpoch = now - this.tuesdayEpoch;
+    while (relativeToEpoch < 0) {
+      // should only happen in tests
+      relativeToEpoch += this.oneWeek;
+    }
+    const moduloWeeks = relativeToEpoch % this.oneWeek;
+    const isInWindow = moduloWeeks < (this.oneHour * 2);
     return isInWindow;
   }
 }
