@@ -1,5 +1,5 @@
-import { TuesdayAfterMidnightCalendar } from "../calendar";
-import { FakeTimeKeeper } from "./__mocks__/fakeTimeKeeper";
+import { TuesdayAfterMidnightCalendar } from '../calendar';
+import { FakeTimeKeeper } from './__mocks__/fakeTimeKeeper';
 
 describe('Calendar', () => {
   let timeKeeper: FakeTimeKeeper;

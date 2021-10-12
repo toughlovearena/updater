@@ -41,10 +41,7 @@ export class Updater {
       return;
     }
 
-    let shouldRestart = (
-      (this.age() >= this.processTimeout) &&
-      this.calendar.isInShutdownWindow()
-    );
+    let shouldRestart = this.age() >= this.processTimeout && this.calendar.isInShutdownWindow();
 
     if (!shouldRestart) {
       try {

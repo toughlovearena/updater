@@ -1,4 +1,4 @@
-import { Calendar } from "../../calendar";
+import { Calendar } from '../../calendar';
 
 export class FakeCalendar implements Calendar {
   private _isInWindow: boolean = false;

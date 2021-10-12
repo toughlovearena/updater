@@ -1,4 +1,4 @@
-import { TimeKeeper } from "./time";
+import { TimeKeeper } from './time';
 
 export interface Calendar {
   isInShutdownWindow(): boolean;
@@ -8,7 +8,7 @@ export class TuesdayAfterMidnightCalendar {
   readonly tuesdayEpoch = 1634018400000; // '10/12/2021, 2:00:00 AM'
   readonly oneHour = 3600000;
   readonly oneWeek = 604800000;
-  constructor(private readonly timeKeeper: TimeKeeper) { }
+  constructor(private readonly timeKeeper: TimeKeeper) {}
 
   isInShutdownWindow() {
     const now = this.timeKeeper.now();
@@ -18,7 +18,7 @@ export class TuesdayAfterMidnightCalendar {
       relativeToEpoch += this.oneWeek;
     }
     const moduloWeeks = relativeToEpoch % this.oneWeek;
-    const isInWindow = moduloWeeks < (this.oneHour * 2);
+    const isInWindow = moduloWeeks < this.oneHour * 2;
     return isInWindow;
   }
 }
