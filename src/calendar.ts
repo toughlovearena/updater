@@ -1,6 +1,10 @@
 import { TimeKeeper } from "./time";
 
-export class Calendar {
+export interface Calendar {
+  isInShutdownWindow(): boolean;
+}
+
+export class TuesdayAfterMidnightCalendar {
   readonly tuesdayEpoch = 1634018400000; // '10/12/2021, 2:00:00 AM'
   readonly oneHour = 3600000;
   readonly oneWeek = 604800000;

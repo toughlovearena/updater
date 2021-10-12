@@ -1,19 +1,24 @@
 import { Updater } from '../updater';
+import { FakeCalendar } from './__mocks__/fakeCalendar';
 import { FakeGitter } from './__mocks__/fakeGitter';
 import { FakeRebuilder } from './__mocks__/fakeRebuilder';
 import { FakeTimeKeeper } from './__mocks__/fakeTimeKeeper';
 
 describe('Updater', () => {
   let timeKeeper: FakeTimeKeeper;
+  let calendar: FakeCalendar;
   let gitter: FakeGitter;
   let rebuilder: FakeRebuilder;
   let sut: Updater;
   beforeEach(() => {
     timeKeeper = new FakeTimeKeeper();
+    calendar = new FakeCalendar();
+    calendar._setIsInWindow(true);
     gitter = new FakeGitter();
     rebuilder = new FakeRebuilder();
     sut = new Updater({
       timeKeeper,
+      calendar,
       gitter,
       rebuilder,
     });
@@ -79,6 +84,7 @@ describe('Updater', () => {
   test('cron() restarts on process timeout', async () => {
     sut = new Updater({
       timeKeeper,
+      calendar,
       gitter,
       rebuilder,
       cronTimeout: 10,

@@ -1,12 +1,12 @@
-import { Calendar } from "../calendar";
+import { TuesdayAfterMidnightCalendar } from "../calendar";
 import { FakeTimeKeeper } from "./__mocks__/fakeTimeKeeper";
 
 describe('Calendar', () => {
   let timeKeeper: FakeTimeKeeper;
-  let sut: Calendar;
+  let sut: TuesdayAfterMidnightCalendar;
   beforeEach(() => {
     timeKeeper = new FakeTimeKeeper();
-    sut = new Calendar(timeKeeper);
+    sut = new TuesdayAfterMidnightCalendar(timeKeeper);
   });
 
   test('isInShutdownWindow()', () => {

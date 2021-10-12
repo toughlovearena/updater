@@ -1,15 +1,15 @@
-import { Calendar } from './calendar';
+import { Calendar, TuesdayAfterMidnightCalendar } from './calendar';
 import { CanGit, Gitter } from './gitter';
 import { CanRebuild, Rebuilder } from './rebuild';
 import { RealClock, TimeKeeper } from './time';
 
 export interface UpdaterArgs {
   timeKeeper?: TimeKeeper;
+  calendar?: Calendar;
   gitter?: CanGit;
   rebuilder?: CanRebuild;
   cronTimeout?: number;
   processTimeout?: number;
-  calendar?: Calendar;
 }
 
 export class Updater {
@@ -28,7 +28,7 @@ export class Updater {
 
   constructor(options?: UpdaterArgs) {
     this.timeKeeper = options?.timeKeeper ?? RealClock;
-    this.calendar = options?.calendar ?? new Calendar(this.timeKeeper);
+    this.calendar = options?.calendar ?? new TuesdayAfterMidnightCalendar(this.timeKeeper);
     this.gitter = options?.gitter ?? new Gitter();
     this.rebuilder = options?.rebuilder ?? new Rebuilder(this.gitter);
     this.startedAt = this.timeKeeper.now();
