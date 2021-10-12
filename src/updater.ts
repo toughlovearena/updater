@@ -1,3 +1,4 @@
+import { Calendar } from './calendar';
 import { CanGit, Gitter } from './gitter';
 import { CanRebuild, Rebuilder } from './rebuild';
 import { RealClock, TimeKeeper } from './time';
@@ -8,6 +9,7 @@ export interface UpdaterArgs {
   rebuilder?: CanRebuild;
   cronTimeout?: number;
   processTimeout?: number;
+  calendar?: Calendar;
 }
 
 export class Updater {
@@ -15,6 +17,7 @@ export class Updater {
   static readonly defaultProcessTimeout = 7 * 24 * 60 * 60 * 1000; // 7 days
 
   readonly timeKeeper: TimeKeeper;
+  readonly calendar: Calendar;
   readonly gitter: CanGit;
   readonly rebuilder: CanRebuild;
   readonly startedAt: number;
@@ -25,6 +28,7 @@ export class Updater {
 
   constructor(options?: UpdaterArgs) {
     this.timeKeeper = options?.timeKeeper ?? RealClock;
+    this.calendar = options?.calendar ?? new Calendar(this.timeKeeper);
     this.gitter = options?.gitter ?? new Gitter();
     this.rebuilder = options?.rebuilder ?? new Rebuilder(this.gitter);
     this.startedAt = this.timeKeeper.now();
@@ -37,7 +41,10 @@ export class Updater {
       return;
     }
 
-    let shouldRestart = this.age() >= this.processTimeout;
+    let shouldRestart = (
+      (this.age() >= this.processTimeout) &&
+      this.calendar.isInShutdownWindow()
+    );
 
     if (!shouldRestart) {
       try {
