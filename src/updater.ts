@@ -1,6 +1,7 @@
 import { Calendar, TuesdayAfterMidnightCalendar } from './calendar';
 import { CanGit, Gitter } from './gitter';
 import { CanRebuild, Rebuilder } from './rebuild';
+import { SETTINGS } from './settings';
 import { RealClock, TimeKeeper } from './time';
 
 export interface UpdaterArgs {
@@ -23,6 +24,7 @@ export class Updater {
   readonly startedAt: number;
   readonly cronTimeout: number;
   readonly processTimeout: number;
+  readonly settings = SETTINGS;
   private rebuilding = false;
   private interval: NodeJS.Timeout | undefined;
 
