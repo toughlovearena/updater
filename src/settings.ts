@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-class SettingsSingleton {
+export class SettingsSingleton {
   private loaded = false;
   private configFile: any;
 
@@ -22,10 +22,10 @@ class SettingsSingleton {
   }): string {
     return this.env(args.envVar) ?? this.config(args.configKey) ?? args.defaultValue;
   }
-  private env(varName: string): string | null {
+  protected env(varName: string): string | null {
     return process.env[varName] || null;
   }
-  private config(key: string): string | null {
+  protected config(key: string): string | null {
     if (!this.loaded) {
       this.loaded = true;
       try {
