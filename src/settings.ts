@@ -5,21 +5,17 @@ export class SettingsSingleton {
   private configFile: any;
 
   readonly bashBuild = this.read({
-    envVar: "UPDATER_BASH_BUILD",
-    configKey: "bashBuild",
-    defaultValue: "npm run build",
+    envVar: 'UPDATER_BASH_BUILD',
+    configKey: 'bashBuild',
+    defaultValue: 'npm run build',
   });
   readonly nodeScript = this.read({
-    envVar: "UPDATER_NODE_SCRIPT",
-    configKey: "nodeScript",
-    defaultValue: "dist/index.js",
+    envVar: 'UPDATER_NODE_SCRIPT',
+    configKey: 'nodeScript',
+    defaultValue: 'dist/index.js',
   });
 
-  private read(args: {
-    envVar: string;
-    configKey: string;
-    defaultValue: string;
-  }): string {
+  private read(args: { envVar: string; configKey: string; defaultValue: string }): string {
     return this.env(args.envVar) ?? this.config(args.configKey) ?? args.defaultValue;
   }
   protected env(varName: string): string | null {

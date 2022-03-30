@@ -21,10 +21,10 @@ describe('settings.ts', () => {
   test('order of priority', () => {
     expect(new TestableSettings().bashBuild).toBe('npm run build');
 
-    _config = {'bashBuild': 'foo',};
+    _config = { bashBuild: 'foo' };
     expect(new TestableSettings().bashBuild).toBe('foo');
 
-    _env = {'UPDATER_BASH_BUILD': 'bar',};
+    _env = { UPDATER_BASH_BUILD: 'bar' };
     expect(new TestableSettings().bashBuild).toBe('bar');
 
     _env = {};
