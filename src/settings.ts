@@ -22,10 +22,10 @@ class SettingsSingleton {
   }): string {
     return this.env(args.envVar) ?? this.config(args.configKey) ?? args.defaultValue;
   }
-  private env(varName: string): string | undefined {
-    return process.env[varName];
+  private env(varName: string): string | null {
+    return process.env[varName] || null;
   }
-  private config(key: string): string | undefined {
+  private config(key: string): string | null {
     if (!this.loaded) {
       this.loaded = true;
       try {
@@ -36,8 +36,9 @@ class SettingsSingleton {
       }
     }
     if (this.configFile) {
-      return this.configFile[key];
+      return this.configFile[key] || null;
     }
+    return null;
   }
 }
 
